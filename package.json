@@ -1,0 +1,23 @@
+{
+  "name": "shortner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/app.js -e js,hbs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.3.7",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "hbs": "^4.2.0",
+    "mongoose": "^6.3.4",
+    "shortid": "^2.2.16",
+    "valid-url": "^1.0.9",
+    "validator": "^13.7.0"
+  }
+}
