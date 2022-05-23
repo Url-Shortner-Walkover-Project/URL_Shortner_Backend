@@ -2,6 +2,13 @@ const mongoose = require('mongoose')
 const shortid = require('shortid')
 
 const shorturlInfo = new mongoose.Schema({
+    user:{
+
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
+
+
+    },
 
 
     full:{

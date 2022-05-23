@@ -4,7 +4,7 @@ const validUrl = require('valid-url')
 const port = process.env.PORT || 6500; //setting the port
 
 const path = require('path'); // Use the path modules to join the folder with directiory
-
+const fetchuser = require("../src/middleware/fetchuser")
 const hbs = require('hbs') // use hbs module to use dynamic data in express
 
 // Setting the paths
@@ -23,15 +23,31 @@ app.use(express.urlencoded({ extended: false }))//important line
 //connect the database to our project
 require("../src/db/dbconnection")
 
-const shortUrl = require('../src/models/shorturlSchema')
+const shortUrl = require('../src/models/shorturlSchema');
+
+
+
+
+
+
+// signup routes
+app.use('/api/auth',require('../routes/auth'))
+
+
 
 
 
 // Routes
-app.get('/', async (req, res) => {
+
+app.get('/',(req,res)=>{
+
+    res.send("Hello");
+})
+
+app.get('/fetchdata',fetchuser, async (req, res) => {
 
     try {
-        const allData = await shortUrl.find();
+        const allData = await shortUrl.find({user: req.user.id});
 
         res.render('index', { Urls: allData })
     } catch (error) {
@@ -42,7 +58,8 @@ app.get('/', async (req, res) => {
 })
 
 
-app.post('/short', async (req, res) => {
+// add a short url in data base login required
+app.post('/fetchdata/short', fetchuser, async (req, res) => {
 
     const url = req.body.fullUrl
 
@@ -54,6 +71,8 @@ app.post('/short', async (req, res) => {
             if (!checkUrl) {
                 const newShort = new shortUrl({
 
+                    user: req.user.id,
+
                     full: url
                 })
 
@@ -61,10 +80,10 @@ app.post('/short', async (req, res) => {
 
 
                 const result = await newShort.save();
-                res.status(201).redirect('/')
+                res.status(201).redirect('/fetchdata')
 
             }else{
-                res.redirect("/")
+                res.redirect("/fetchdata")
             }
 
 
