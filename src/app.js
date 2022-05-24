@@ -1,22 +1,15 @@
+
 const express = require('express'); // Require express
 const app = express();
+require('dotenv').config();
+var cors = require('cors')
 const validUrl = require('valid-url')
 const port = process.env.PORT || 6500; //setting the port
 
-const path = require('path'); // Use the path modules to join the folder with directiory
 const fetchuser = require("../src/middleware/fetchuser")
-const hbs = require('hbs') // use hbs module to use dynamic data in express
-
-// Setting the paths
-const static_path = path.join(__dirname, "../public")
-const template_path = path.join(__dirname, "../templates/views")
-const partials_path = path.join(__dirname, "../templates/partials")
 
 
-app.set("view engine", "hbs")
-app.use(express.static(static_path));
-app.set("views", template_path)
-hbs.registerPartials(partials_path)
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))//important line
 
@@ -31,7 +24,7 @@ const shortUrl = require('../src/models/shorturlSchema');
 
 
 // signup routes
-app.use('/api/auth',require('../routes/auth'))
+app.use('/api/auth', require('../routes/auth'))
 
 
 
@@ -39,17 +32,17 @@ app.use('/api/auth',require('../routes/auth'))
 
 // Routes
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
 
     res.send("Hello");
 })
 
-app.get('/fetchdata',fetchuser, async (req, res) => {
+app.get('/fetchdata', fetchuser, async (req, res) => {
 
     try {
-        const allData = await shortUrl.find({user: req.user.id});
+        const allData = await shortUrl.find({ user: req.user.id });
 
-        res.render('index', { Urls: allData })
+        res.json(allData)
     } catch (error) {
 
         res.send(error);
@@ -59,32 +52,33 @@ app.get('/fetchdata',fetchuser, async (req, res) => {
 
 
 // add a short url in data base login required
-app.post('/fetchdata/short', fetchuser, async (req, res) => {
+app.post('/adddata/short', fetchuser, async (req, res) => {
 
-    const url = req.body.fullUrl
 
-    if (validUrl.isUri(url)) {
+      const {fullUrl} = req.body;
+
+
+       const url = fullUrl
+
+    if (validUrl.isUri(url)) 
+    {
         try {
+            const newShort = new shortUrl({
 
-            const checkUrl = await shortUrl.findOne({ full: url });
+                user: req.user.id,
 
-            if (!checkUrl) {
-                const newShort = new shortUrl({
-
-                    user: req.user.id,
-
-                    full: url
-                })
+                full: url
+            })
 
 
 
 
-                const result = await newShort.save();
-                res.status(201).redirect('/fetchdata')
+            const result = await newShort.save();
+            res.json(result)
 
-            }else{
-                res.redirect("/fetchdata")
-            }
+            
+
+        
 
 
 
@@ -93,7 +87,7 @@ app.post('/fetchdata/short', fetchuser, async (req, res) => {
             res.status(404).send(error);
         }
 
-    } else {
+    }else {
 
         res.status(404).send("Invalid URL")
     }

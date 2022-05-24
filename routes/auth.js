@@ -11,6 +11,8 @@ const fetchuser  = require("../src/middleware/fetchuser");
 // create a user using POST "/api/auth"
 router.post('/createuser', async (req, resp) => {
 
+    let success = false;
+
     try {
 
         const registerUser = new User({
@@ -30,7 +32,7 @@ router.post('/createuser', async (req, resp) => {
         }
 
         // create the token wheen user signup
-        const authtoken = jwt.sign(data, key)
+        const authtoken = jwt.sign(data, process.env.SECRET_KEY)
         
 
 
@@ -41,12 +43,12 @@ router.post('/createuser', async (req, resp) => {
 
 
         const result = await registerUser.save();
-        resp.json(authtoken);
+        resp.json({success:true, authtoken});
 
 
     } catch (err) {
         console.log(err)
-        resp.json({ error: "Please enter a unique value for email" })
+        resp.json({ success,error: "Please enter a unique value for email" })
 
     }
 })
@@ -69,7 +71,7 @@ router.post('/login', [
 
 
     const { email, password } = req.body;
-
+     let success = false;
 
     try {
 
@@ -84,7 +86,8 @@ router.post('/login', [
         const passwordComp = await bcrypt.compare(password, user.password);
 
         if (!passwordComp) {
-            res.status(400).json({ error: "Sorry Please enter the right credentials" });
+            success=false;
+            res.status(400).json({ success,error: "Sorry Please enter the right credentials" });
         }
 
         const data = {
@@ -93,10 +96,12 @@ router.post('/login', [
                 id: user.id,
             }
         }
-        const authtoken = jwt.sign(data, key)
+        const authtoken = jwt.sign(data, process.env.SECRET_KEY)
         //console.log(authtoken)
 
-        res.json({ authtoken })
+        success = true;
+
+        res.json({ success,authtoken })
 
     } catch (error) {
 

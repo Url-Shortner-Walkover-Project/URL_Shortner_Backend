@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 
-mongoose.connect(`mongodb://localhost:27017/shortUrl`,
+mongoose.connect(`mongodb://localhost:27017/${process.env.DataBase}`,
 { useNewUrlParser: true,
 useUnifiedTopology: true,
 //useFindAndModify:false

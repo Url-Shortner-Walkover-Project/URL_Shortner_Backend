@@ -14,10 +14,10 @@ const fetchuser = async(req,res,next)=>{
         }
 
         
-        const data = jwt.verify(token,key)
+        const data = jwt.verify(token,process.env.SECRET_KEY)
 
        
-        console.log(data)
+     
         req.user = data.user;
         next();
 
