@@ -22,6 +22,7 @@
     "hbs": "^4.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.4",
+    "nodemon": "^2.0.16",
     "shortid": "^2.2.16",
     "valid-url": "^1.0.9",
     "validator": "^13.7.0"

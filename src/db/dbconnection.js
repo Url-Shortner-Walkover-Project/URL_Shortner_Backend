@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
+const password = encodeURIComponent("vishal8803");
 
-mongoose.connect(`mongodb://localhost:27017/${process.env.DataBase}`,
+mongoose.connect(`mongodb+srv://vishal8803:${password}@cluster0.cks95.mongodb.net/test`,
 { useNewUrlParser: true,
 useUnifiedTopology: true,
-//useFindAndModify:false
 }).then(()=>{
-
     console.log("connection is succesfull")
 }).catch((e)=>{
+    console.log(e)
     console.log("No connection")
 })
